@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site site="http://www.4tube.com"
+	plugin="http://www\.4tube\.com/player.*\.swf#w00t"
+	initialState="cleanup-webpage"
+	version="3.0">
+
+	<crop x="0" y="0" width="616" height="460" />
+	<seekbar type="thumb">
+		<start x="62" y="481" />
+		<end x="316" y="481" />
+		<played>
+			<color rgb="181818" />
+		</played>
+	</seekbar>
+
+	<!-- CLEANUP-WEBPAGE -->
+	<state name="cleanup-webpage">
+		<event>
+			<condition>
+				<frameLoaded />
+			</condition>
+			<action>
+				<run script="iframes=document.getElementsByTagName('iframe');for(i=0;i&lt;iframes.length;i++){iframes[i].src='';}" />
+				<run script="function cleanup(){var el=document.getElementById('swf_ply');if(el!=null){var x=el.parentNode.innerHTML;document.getElementsByTagName('html')[0].innerHTML='';x=x.replace('.swf','.swf#w00t');x=x.replace('%26autostart=1','&amp;autostart=1');document.getElementsByTagName('html')[0].innerHTML='&lt;div style=&quot;width:616px;height:504px;&quot;&gt;'+x+'&lt;/div&gt;';}else{setTimeout('cleanup()',100);}}cleanup();" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PLAYING -->
+	<state name="playing">
+		<event>
+			<condition>
+				<command name="pause" />
+			</condition>
+			<action>
+				<click x="27" y="481" />
+				<goto state="paused" />
+			</action>
+		</event>
+
+		<!-- Video ends -->
+		<event>
+			<condition>
+                <and>
+                    <color x="322" y="481" rgb="fb4a14" />
+                    <color x="27" y="481" rgb="f84b21" />
+                </and>
+			</condition>
+			<action>
+				<goto state="end" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PAUSED -->
+	<state name="paused">
+		<event>
+			<condition>
+				<command name="play" />
+			</condition>
+			<action>
+				<click x="27" y="481" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+</site>
